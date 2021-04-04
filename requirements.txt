@@ -1,0 +1,5 @@
+starlette
+pydantic
+fastapi
+uvicorn
+sqlalchemy

@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  fastapi_tryout:
+    container_name: fastapi_tryout
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fastapi_tryout
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    restart: always
+    depends_on:
+      - fastapi_tryout_postgres
+    environment:
+      SQLALCHEMY_DATABASE_URL: "postgres://postgres:test@db/postgres"
+    command: python -m uvicorn --host=0.0.0.0 main:app
+
+  fastapi_tryout_postgres:
+    image: postgres:9.6
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
