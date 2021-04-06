@@ -1,0 +1,6 @@
+# docker run --rm -it -v $(pwd):/app emyller/pip-tools pip-compile --output-file requirements.txt requirements.in
+pydantic==1.8.1
+sqlalchemy==1.4.5
+fastapi==0.63.0
+starlette==0.13.6
+uvicorn==0.13.4
