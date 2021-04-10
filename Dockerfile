@@ -1,27 +1,18 @@
-FROM python:3.9-alpine
+# get base image
+FROM python:3.9
 
-ENV PYTHONUNBUFFERED 1
+# prevent python from writing pyc files to disc
+ENV PYTHONDONTWRITEBYTECODE 1
+# prevent python from buffering stdout and stderr
+ENV PYTHONBUFFERED 1
 
-EXPOSE 8000
-
-RUN apk update \
-  # psycopg2 dependencies
-  && apk add --virtual build-deps g++ gcc python3-dev musl-dev \
-  && apk add postgresql-dev \
-  # Pillow dependencies
-  && apk add jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
-  # CFFI dependencies
-  && apk add libffi-dev py-cffi \
-  # Translations dependencies
-  && apk add gettext \
-  # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
-  && apk add postgresql-client\
-  # lxml (zeep)
-  && apk add libxslt-dev
-
+# copy requirements.txt
 COPY ./requirements.txt /requirements.txt
+# install requirements.txt
 RUN pip install -r /requirements.txt
 
 COPY ./src /src
 
-CMD uvicorn src.main:app --reload --port 8000 --host 0.0.0.0
+WORKDIR /src/backend
+
+CMD uvicorn api.server:app --reload --host ${FASTAPI_HOST} --port ${FASTAPI_PORT}

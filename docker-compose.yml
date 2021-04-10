@@ -12,16 +12,30 @@ services:
     volumes:
       - ./src:/src
     ports:
-      - "8000:8000"
-    restart: always
+      - ${FASTAPI_PORT}:${FASTAPI_PORT}
     depends_on:
-      - fastapi_tryout_postgres
-    environment:
-      SQLALCHEMY_DATABASE_URL: "postgres://postgres:test@db/postgres"
+      - fastapi_tryout_posgres
 
-  fastapi_tryout_postgres:
-    image: postgres:9.6
-    ports:
-      - "5432:5432"
+  fastapi_tryout_posgres:
+    image: postgres:13-alpine
+    container_name: ${POSTGRES_HOST}
     env_file:
       - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+
+  fastapi_tryout_pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - fastapi_tryout_posgres
+
+volumes:
+  postgres_data:

@@ -4,20 +4,41 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
+alembic==1.5.8
+    # via -r requirements.in
+asyncpg==0.22.0
+    # via databases
 click==7.1.2
     # via uvicorn
+databases[postgresql]==0.4.2
+    # via -r requirements.in
 fastapi==0.63.0
     # via -r requirements.in
 greenlet==1.0.0
     # via sqlalchemy
 h11==0.12.0
     # via uvicorn
+mako==1.1.4
+    # via alembic
+markupsafe==1.1.1
+    # via mako
+psycopg2==2.8.6
+    # via -r requirements.in
 pydantic==1.8.1
     # via
     #   -r requirements.in
     #   fastapi
+python-dateutil==2.8.1
+    # via alembic
+python-editor==1.0.4
+    # via alembic
+six==1.15.0
+    # via python-dateutil
 sqlalchemy==1.4.5
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   alembic
+    #   databases
 starlette==0.13.6
     # via
     #   -r requirements.in
