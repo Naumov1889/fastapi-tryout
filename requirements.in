@@ -6,3 +6,8 @@ pydantic==1.8.1
 fastapi==0.63.0
 starlette==0.13.6
 uvicorn==0.13.4
+
+pytest==6.2.3  # testing framework
+pytest-asyncio==0.14.0  # provides utilities for testing asynchronous code
+httpx==0.17.1  # provides an async request client for testing endpoints
+asgi-lifespan==1.0.1  # allows testing async applications without having to spin up an ASGI server

@@ -1,22 +1,18 @@
-# import sys
-# from logging.config import fileConfig
-#
-# from sqlalchemy import engine_from_config, pool
-# from alembic import context
-
-
+import os
 import pathlib
 import sys
-from alembic import context
-from sqlalchemy import engine_from_config, pool
 
-from logging.config import fileConfig
+from psycopg2 import DatabaseError
+from alembic import context
+from sqlalchemy import engine_from_config, create_engine, pool
+
 import logging
+from logging.config import fileConfig
+
+from core.config import DATABASE_URL, POSTGRES_DB
 
 # we're appending the app directory to our path here so that we can import config easily
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[3]))
-
-from core.config import DATABASE_URL
 
 # Alembic Config object, which provides access to values within the .ini file
 config = context.config
@@ -30,8 +26,20 @@ def run_migrations_online() -> None:
     """
     Run migrations in 'online' mode
     """
+    DB_URL = f"{DATABASE_URL}_test" \
+        if os.environ.get("TESTING") else str(DATABASE_URL)
+    # handle testing config for migrations
+    if os.environ.get("TESTING"):
+        # connect to primary db
+        default_engine = create_engine(str(DATABASE_URL),
+                                       isolation_level="AUTOCOMMIT")
+        # drop testing db if it exists and create a fresh one
+        with default_engine.connect() as default_conn:
+            default_conn.execute(f"DROP DATABASE IF EXISTS {POSTGRES_DB}_test")
+            default_conn.execute(f"CREATE DATABASE {POSTGRES_DB}_test")
+
     connectable = config.attributes.get("connection", None)
-    config.set_main_option("sqlalchemy.url", str(DATABASE_URL))
+    config.set_main_option("sqlalchemy.url", DB_URL)
 
     if connectable is None:
         connectable = engine_from_config(
@@ -54,6 +62,10 @@ def run_migrations_offline() -> None:
     """
     Run migrations in 'offline' mode.
     """
+    if os.environ.get("TESTING"):
+        raise DatabaseError("Running testing migrations offline \
+                            currently not permitted.")
+
     context.configure(url=str(DATABASE_URL))
 
     with context.begin_transaction():
@@ -66,4 +78,3 @@ if context.is_offline_mode():
 else:
     logger.info("Running migrations online")
     run_migrations_online()
-
