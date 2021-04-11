@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from .some_test_app import router as some_test_app_router
+from .cleanings import router as cleanings_router
 
 router = APIRouter()
-router.include_router(some_test_app_router, prefix="/some_test_app", tags=["some_test_app"])
+router.include_router(cleanings_router, prefix="/cleanings", tags=["cleanings"])

@@ -1,5 +1,5 @@
-from app.db.repositories.base import BaseRepository
-from app.models.cleaning import CleaningCreate, CleaningUpdate, CleaningInDB
+from db.repositories.base import BaseRepository
+from models.cleaning import CleaningCreate, CleaningUpdate, CleaningInDB
 
 CREATE_CLEANING_QUERY = """
     INSERT INTO cleanings (name, description, price, cleaning_type)

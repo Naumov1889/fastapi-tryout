@@ -17,11 +17,12 @@ depends_on = None
 
 def create_some_test_table() -> None:
     op.create_table(
-        "posts",
-        sa.Column('id', sa.Integer, primary_key=True, index=True),
-        sa.Column('title', sa.String(100)),
-        sa.Column('text', sa.Text),
-        sa.Column('date', sa.DateTime),
+        "cleanings",
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("name", sa.Text, nullable=False, index=True),
+        sa.Column("description", sa.Text, nullable=True),
+        sa.Column("cleaning_type", sa.Text, nullable=False, server_default="spot_clean"),
+        sa.Column("price", sa.Numeric(10, 2), nullable=False),
     )
 
 
