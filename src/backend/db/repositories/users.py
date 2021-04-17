@@ -1,8 +1,13 @@
+from typing import Optional
+
 from pydantic import EmailStr
 from fastapi import HTTPException, status
+from databases import Database
+
 
 from models.user import UserCreate, UserInDB
 from db.repositories.base import BaseRepository
+from services import auth_service
 
 
 GET_USER_BY_EMAIL_QUERY = """
@@ -26,6 +31,10 @@ REGISTER_NEW_USER_QUERY = """
 
 
 class UsersRepository(BaseRepository):
+    def __init__(self, db: Database) -> None:
+        super().__init__(db)
+        self.auth_service = auth_service
+
     async def register_new_user(self, *, new_user: UserCreate) -> UserInDB:
         # make sure email isn't already taken
         if await self.get_user_by_email(email=new_user.email):
@@ -41,11 +50,25 @@ class UsersRepository(BaseRepository):
                 detail="That username is already taken. Please try another one."
             )
 
+        user_password_update = self.auth_service.create_salt_and_hashed_password(
+            plaintext_password=new_user.password)
+        new_user_params = new_user.copy(update=user_password_update.dict())
         created_user = await self.db.fetch_one(
             query=REGISTER_NEW_USER_QUERY,
-            values={**new_user.dict(), 'salt': '123'}
+            values=new_user_params.dict()
         )
         return UserInDB(**created_user)
+
+    async def authenticate_user(self, *, email: EmailStr, password: str) -> Optional[UserInDB]:
+        # make sure user user exists in db
+        user = await self.get_user_by_email(email=email)
+        if not user:
+            return None
+
+        # if submitted password doesn't match
+        if not self.auth_service.verify_password(password=password, salt=user.salt, hashed_pw=user.password):
+            return None
+        return user
 
     async def get_user_by_email(self, *, email: EmailStr) -> UserInDB:
         user = await self.db.fetch_one(

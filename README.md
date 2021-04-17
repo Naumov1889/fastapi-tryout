@@ -11,3 +11,6 @@ Trying out fastapi. Setup with docker.
 
 ## Testing
 * ```docker-compose run --rm fastapi_tryout pytest -v```
+
+# Secret
+* ```openssl rand -hex 32```

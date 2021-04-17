@@ -12,7 +12,11 @@ import alembic
 from alembic.config import Config
 
 from models.cleaning import CleaningCreate, CleaningInDB
+from models.user import UserInDB, UserCreate
 from db.repositories.cleanings import CleaningsRepository
+from db.repositories.users import UsersRepository
+from core.config import SECRET_KEY, JWT_TOKEN_PREFIX
+from services import auth_service
 
 
 # Apply migrations at beginning and end of testing session
@@ -64,3 +68,32 @@ async def test_cleaning(db: Database) -> CleaningInDB:
         cleaning_type="spot_clean",
     )
     return await cleaning_repo.create_cleaning(new_cleaning=new_cleaning)
+
+
+@pytest.fixture
+async def test_user(db: Database) -> UserInDB:
+    new_user = UserCreate(
+        email="lebron@james.io",
+        username="lebronjames",
+        password="heatcavslakers",
+    )
+
+    user_repo = UsersRepository(db)
+
+    existing_user = await user_repo.get_user_by_email(email=new_user.email)
+    if existing_user:
+        return existing_user
+
+    return await user_repo.register_new_user(new_user=new_user)
+
+
+@pytest.fixture
+def authorized_client(client: AsyncClient, test_user: UserInDB) -> AsyncClient:
+    access_token = auth_service.create_access_token_for_user(
+        user=test_user, secret_key=str(SECRET_KEY)
+    )
+    client.headers = {
+        **client.headers,
+        "Authorization": f"{JWT_TOKEN_PREFIX} {access_token}",
+    }
+    return client

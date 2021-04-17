@@ -11,7 +11,7 @@ uvicorn==0.13.4
 
 pyjwt==2.0.1
 passlib[bcrypt]==1.7.4
-
+python-multipart==0.0.5  # for OAuth2PasswordRequestForm
 
 pytest==6.2.3  # testing framework
 pytest-asyncio==0.14.0  # provides utilities for testing asynchronous code
