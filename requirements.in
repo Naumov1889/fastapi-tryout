@@ -2,11 +2,16 @@ psycopg2==2.8.6
 databases[postgresql]==0.4.2
 sqlalchemy==1.4.5
 alembic==1.5.8
+
 pydantic==1.8.1
 email-validator==1.1.2
 fastapi==0.63.0
 starlette==0.13.6
 uvicorn==0.13.4
+
+pyjwt==2.0.1
+passlib[bcrypt]==1.7.4
+
 
 pytest==6.2.3  # testing framework
 pytest-asyncio==0.14.0  # provides utilities for testing asynchronous code

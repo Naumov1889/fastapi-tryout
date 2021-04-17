@@ -12,8 +12,12 @@ asyncpg==0.22.0
     # via databases
 attrs==20.3.0
     # via pytest
+bcrypt==3.2.0
+    # via passlib
 certifi==2020.12.5
     # via httpx
+cffi==1.14.5
+    # via bcrypt
 click==7.1.2
     # via uvicorn
 databases[postgresql]==0.4.2
@@ -46,16 +50,22 @@ markupsafe==1.1.1
     # via mako
 packaging==20.9
     # via pytest
+passlib[bcrypt]==1.7.4
+    # via -r requirements.in
 pluggy==0.13.1
     # via pytest
 psycopg2==2.8.6
     # via -r requirements.in
 py==1.10.0
     # via pytest
+pycparser==2.20
+    # via cffi
 pydantic==1.8.1
     # via
     #   -r requirements.in
     #   fastapi
+pyjwt==2.0.1
+    # via -r requirements.in
 pyparsing==2.4.7
     # via packaging
 pytest-asyncio==0.14.0
@@ -71,7 +81,9 @@ python-editor==1.0.4
 rfc3986[idna2008]==1.4.0
     # via httpx
 six==1.15.0
-    # via python-dateutil
+    # via
+    #   bcrypt
+    #   python-dateutil
 sniffio==1.2.0
     # via
     #   asgi-lifespan
