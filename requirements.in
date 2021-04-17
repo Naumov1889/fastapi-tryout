@@ -3,6 +3,7 @@ databases[postgresql]==0.4.2
 sqlalchemy==1.4.5
 alembic==1.5.8
 pydantic==1.8.1
+email-validator==1.1.2
 fastapi==0.63.0
 starlette==0.13.6
 uvicorn==0.13.4
